@@ -1,0 +1,190 @@
+# =============================================================================
+# ibmi-dev-tools.yaml — SQL tools the IBM i MCP server exposes to Bob
+# =============================================================================
+# WHAT THIS IS
+#   Bob does not connect to IBM i itself. .bob/mcp.json starts IBM's open-source
+#   IBM i MCP server (@ibm/ibmi-mcp-server) and points it at THIS file. Every
+#   entry under `tools:` becomes one tool Bob can call (in modes that have the
+#   `mcp` group), e.g. "where_used". The server runs the SQL through Mapepire.
+#
+#   Note: this folder (.bob/mcp-tools/) is our own convention, not a Bob
+#   feature. Bob only reads it because mcp.json passes it with --tools.
+#
+# SECTIONS
+#   sources:   how to connect (values come from environment variables)
+#   tools:     name -> description (Bob reads it to pick a tool!), parameters,
+#              and the SQL statement. Parameters are bound as :name markers,
+#              never pasted into the SQL, so they cannot inject SQL.
+#   toolsets:  named groups of tools (load a subset with --toolsets)
+#
+# SAFETY
+#   Every tool here is a SELECT over catalog views / IBM i services.
+#   `security.readOnly: true` makes the server refuse anything that writes,
+#   and `annotations.readOnlyHint` tells MCP clients the tool changes nothing.
+#
+# TRY IT (without Bob)
+#   npx -y @ibm/ibmi-mcp-server@latest --list-toolsets --tools .bob/mcp-tools
+#
+# DOCS
+#   Server + schema:  https://github.com/IBM/ibmi-mcp-server  (see tools/README.md)
+#   IBM's own examples: https://github.com/IBM/ibmi-mcp-server/tree/main/tools
+#   Guide in this repo: .bob/docs/07-mcp-servers.md
+# =============================================================================
+
+sources:
+  ibmi-system:
+    host: ${DB2i_HOST}
+    user: ${DB2i_USER}
+    password: ${DB2i_PASS}
+    port: 8076
+    ignore-unauthorized: true          # self-signed Mapepire certificate; set false in production
+
+tools:
+  list_objects:
+    source: ibmi-system
+    description: >-
+      List objects in an IBM i library, optionally filtered by object type
+      (e.g. '*PGM', '*SRVPGM', '*FILE', or '*ALL').
+    parameters:
+      - name: library
+        type: string
+        description: "Library name, uppercase, max 10 characters (e.g. 'ORDDEV01')"
+        required: true
+        maxLength: 10
+        pattern: "^[A-Z$#@][A-Z0-9$#@_]{0,9}$"
+      - name: object_type
+        type: string
+        description: "Object type filter such as '*PGM' or '*FILE'; '*ALL' for everything"
+        default: "*ALL"
+    statement: |
+      SELECT OBJNAME, OBJTYPE, OBJATTRIBUTE, OBJTEXT, LAST_USED_TIMESTAMP, CHANGE_TIMESTAMP
+        FROM TABLE(QSYS2.OBJECT_STATISTICS(:library, :object_type))
+       ORDER BY OBJTYPE, OBJNAME
+    security:
+      readOnly: true
+    annotations:
+      readOnlyHint: true
+      idempotentHint: true
+
+  program_references:
+    source: ibmi-system
+    description: >-
+      Show every file and program that one *PGM or *SRVPGM references
+      (the SQL equivalent of DSPPGMREF).
+    parameters:
+      - name: library
+        type: string
+        description: "Library of the program (e.g. 'ORDDEV01')"
+        required: true
+        maxLength: 10
+      - name: program
+        type: string
+        description: "Program name (e.g. 'CUSTINQ')"
+        required: true
+        maxLength: 10
+    statement: |
+      SELECT PROGRAM_NAME, OBJECT_NAME, OBJECT_LIBRARY, OBJECT_TYPE, FILE_USAGE
+        FROM QSYS2.PROGRAM_REFERENCES
+       WHERE PROGRAM_LIBRARY = :library AND PROGRAM_NAME = :program
+    security:
+      readOnly: true
+    annotations:
+      readOnlyHint: true
+
+  where_used:
+    source: ibmi-system
+    description: >-
+      Impact analysis: find every program in a library that references a given
+      file or program. Use before changing a file layout or a called program.
+    parameters:
+      - name: library
+        type: string
+        description: "Library to search (e.g. 'ORDDEV01')"
+        required: true
+        maxLength: 10
+      - name: object
+        type: string
+        description: "Referenced object name, file or program (e.g. 'CUSTMAST')"
+        required: true
+        maxLength: 10
+    statement: |
+      SELECT PROGRAM_LIBRARY, PROGRAM_NAME, OBJECT_TYPE, FILE_USAGE
+        FROM QSYS2.PROGRAM_REFERENCES
+       WHERE PROGRAM_LIBRARY = :library AND OBJECT_NAME = :object
+       ORDER BY PROGRAM_NAME
+    security:
+      readOnly: true
+    annotations:
+      readOnlyHint: true
+
+  table_columns:
+    source: ibmi-system
+    description: Describe the columns (name, type, length, text) of a table or physical file.
+    parameters:
+      - name: library
+        type: string
+        description: "Library / schema (e.g. 'ORDDEV01')"
+        required: true
+      - name: table
+        type: string
+        description: "Table or file name (e.g. 'CUSTMAST')"
+        required: true
+    statement: |
+      SELECT COLUMN_NAME, SYSTEM_COLUMN_NAME, DATA_TYPE, LENGTH, NUMERIC_SCALE,
+             IS_NULLABLE, COLUMN_TEXT
+        FROM QSYS2.SYSCOLUMNS
+       WHERE TABLE_SCHEMA = :library AND TABLE_NAME = :table
+       ORDER BY ORDINAL_POSITION
+    security:
+      readOnly: true
+    annotations:
+      readOnlyHint: true
+
+  recent_job_messages:
+    source: ibmi-system
+    description: >-
+      Show the 50 most recent job log messages for a job. Use to diagnose a
+      failed batch job. Needs the qualified job name.
+    parameters:
+      - name: job_name
+        type: string
+        description: "Qualified job name, e.g. '123456/QUSER/ORDNIGHT'"
+        required: true
+    statement: |
+      SELECT MESSAGE_TIMESTAMP, MESSAGE_ID, MESSAGE_TYPE, SEVERITY, MESSAGE_TEXT
+        FROM TABLE(QSYS2.JOBLOG_INFO(:job_name))
+       ORDER BY ORDINAL_POSITION DESC
+       FETCH FIRST 50 ROWS ONLY
+    security:
+      readOnly: true
+    annotations:
+      readOnlyHint: true
+
+  active_jobs_in_subsystem:
+    source: ibmi-system
+    description: List active jobs in one subsystem with status, user and CPU time.
+    parameters:
+      - name: subsystem
+        type: string
+        description: "Subsystem name, e.g. 'QBATCH'"
+        required: true
+        maxLength: 10
+    statement: |
+      SELECT JOB_NAME, JOB_STATUS, AUTHORIZATION_NAME, CPU_TIME, FUNCTION
+        FROM TABLE(QSYS2.ACTIVE_JOB_INFO(SUBSYSTEM_LIST_FILTER => :subsystem))
+    security:
+      readOnly: true
+    annotations:
+      readOnlyHint: true
+
+toolsets:
+  ibmi_dev:
+    title: IBM i development lookups
+    description: Read-only object, reference, catalog and job log queries
+    tools:
+      - list_objects
+      - program_references
+      - where_used
+      - table_columns
+      - recent_job_messages
+      - active_jobs_in_subsystem

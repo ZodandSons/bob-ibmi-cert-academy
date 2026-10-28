@@ -1,0 +1,1178 @@
+# Practice questions for C3000-006 (IBM Bob v2 Developer - Associate)
+# Original questions written for this repository, weighted like the exam:
+#   S1 17% (13) · S2 23% (18) · S3 19% (15) · S4 17% (13) · S5 8% (6) · S6 16% (12) = 77
+# Fields: id, section, objective, question, options{a..e}, answer[list], explain, study
+# Run:     python3 .bob/docs/exam/quiz/quiz.py --help
+# Export:  python3 .bob/docs/exam/quiz/quiz.py --export-md ../practice-questions.md
+
+sections:
+  1: Concepts
+  2: Bob Core Features
+  3: Bob Use Cases
+  4: Bob Configuration
+  5: Bob Accounts
+  6: Bob Security
+
+questions:
+
+# ----------------------------------------------------------------- Section 1
+- id: 1-01
+  section: 1
+  objective: "1.1"
+  question: >-
+    Which list contains the five prompt components recommended for effective Bob prompts?
+  options:
+    a: Goal, scope, budget, deadline, owner
+    b: Instruction, role, context, example, cue
+    c: System prompt, tools, MCP, rules, messages
+    d: Read, edit, execute, MCP, skill
+  answer: [b]
+  explain: >-
+    The five components are instruction, role, context, example and cue. "System prompt,
+    tools, MCP, rules, messages" is the context-window list and "read, edit, execute..."
+    is tool groups, both common distractors.
+  study: section-1-concepts.md#11-write-effective-prompts
+
+- id: 1-02
+  section: 1
+  objective: "1.1"
+  question: >-
+    A developer wants a new CL program to follow the same error-handling structure as
+    the team's best existing CL program. Which prompt best applies the "example" practice?
+  options:
+    a: "Act as a senior IBM i systems programmer and write the program."
+    b: "Search the internet for good CL error-handling patterns."
+    c: "Create qcllesrc/ordpurge.pgm.clle following the structure of @qcllesrc/ordnight.pgm.clle."
+    d: "Write a CL program with good error handling."
+  answer: [c]
+  explain: >-
+    Pointing Bob at a specific, well-written file in the codebase is the example practice.
+    "Act as a senior..." is a role, searching the internet brings in generic outside content,
+    and "good error handling" is vague.
+  study: section-1-concepts.md#11-write-effective-prompts
+
+- id: 1-03
+  section: 1
+  objective: "1.1"
+  question: >-
+    A prompt says "Fix the order program." Which change makes it most specific?
+  options:
+    a: Add "please" and "carefully" to the request.
+    b: Name the file and lines, the exact error, the expected behaviour, what must not change, and how completion is verified.
+    c: Ask Bob to read the whole repository first so it has all the context.
+    d: Switch to Ask mode before sending the same prompt.
+  answer: [b]
+  explain: >-
+    Specificity means stating the exact task, outcome and relevant constraints (file scope,
+    expected behaviour, completion criteria). Reading the whole repo wastes tokens and can
+    poison context.
+  study: section-1-concepts.md#11-write-effective-prompts
+
+- id: 1-04
+  section: 1
+  objective: "1.1"
+  question: >-
+    Converting a 3,000-line fixed-format RPG program, adding unit tests and updating the
+    build in one prompt keeps producing incomplete results. Which prompting practice helps most?
+  options:
+    a: Task decomposition into smaller steps, each with a clear objective
+    b: Adding a stronger role statement
+    c: Pasting the full program source into the chat
+    d: Asking Bob to "try harder"
+  answer: [a]
+  explain: >-
+    Complex work should be split into manageable steps with clear objectives (e.g. inventory,
+    convert, verify, test, build).
+  study: section-1-concepts.md#11-write-effective-prompts
+
+- id: 1-05
+  section: 1
+  objective: "1.1"
+  question: >-
+    Why should a developer use "@qrpglesrc/ordentry.pgm.sqlrpgle:120-160" instead of asking Bob
+    to look at the whole qrpglesrc folder?
+  options:
+    a: Folder mentions are not supported in Bob.
+    b: It gives Bob precisely the relevant code without loading unnecessary repository content.
+    c: Line ranges make Bob switch to Agent mode.
+    d: It bypasses the approval prompt.
+  answer: [b]
+  explain: >-
+    @ context mentions point Bob at specific files or code, keeping the context window lean
+    and the answer focused.
+  study: section-4-configuration.md#43-context-mentions-
+
+- id: 1-06
+  section: 1
+  objective: "1.2"
+  question: >-
+    What does running /init do?
+  options:
+    a: Installs Bob Shell and its dependencies
+    b: Resets all custom modes to defaults
+    c: Scans the project and generates AGENTS.md context files so Bob learns its structure, technologies, conventions and workflows
+    d: Creates a new Git repository for rollback snapshots
+  answer: [c]
+  explain: >-
+    /init initializes persistent project context by generating the root AGENTS.md and
+    mode-specific AGENTS.md files.
+  study: section-1-concepts.md#12-initiate-a-project-agentsmd
+
+- id: 1-07
+  section: 1
+  objective: "1.2"
+  question: >-
+    A team wants Ask mode, in this project only, to always explain IBM i terms the first time
+    it uses them. What is the most direct way?
+  options:
+    a: Create a new custom mode called ask2
+    b: Add the guidance to Ask mode's AGENTS.md (rules) file inside .bob
+    c: Built-in modes cannot be changed
+    d: Add the guidance to every prompt
+  answer: [b]
+  explain: >-
+    Built-in modes have mode-specific AGENTS.md / rules files inside .bob (rules-ask/). Editing
+    them customizes the mode without creating a new one.
+  study: section-1-concepts.md#12-initiate-a-project-agentsmd
+
+- id: 1-08
+  section: 1
+  objective: "1.2"
+  question: >-
+    The project moved from DDS to SQL DDL and reorganized its source folders. What should the team do with AGENTS.md?
+  options:
+    a: Nothing; AGENTS.md updates itself every session
+    b: Delete it; Bob reads the code directly
+    c: Re-run /init, then re-add business and team conventions the scan cannot detect
+    d: Move it into .bob/skills/
+  answer: [c]
+  explain: >-
+    Re-run /init after significant structural, framework or technology changes, and manually
+    keep conventions that automated scanning misses.
+  study: section-1-concepts.md#12-initiate-a-project-agentsmd
+
+- id: 1-09
+  section: 1
+  objective: "1.3"
+  question: >-
+    What is the main benefit of MCP compared with building custom integrations?
+  options:
+    a: It replaces the need for an IDE
+    b: It provides one standardized interface so Bob does not need a unique integration for every external system
+    c: It makes Bob free to use
+    d: It encrypts all source code automatically
+  answer: [b]
+  explain: >-
+    MCP is a standard protocol (the "USB-C port" analogy) that extends Bob with external tools
+    and data without modifying Bob's core.
+  study: section-1-concepts.md#13-why-use-an-mcp-server
+
+- id: 1-10
+  section: 1
+  objective: "1.3"
+  question: >-
+    A developer's global MCP config and the project's .bob/mcp.json both define a server named
+    "ibmi-mcp" with different settings. Which is used in that project?
+  options:
+    a: The global definition
+    b: The project definition
+    c: Both, merged field by field
+    d: Neither; Bob reports an error
+  answer: [b]
+  explain: Project MCP configuration takes precedence when server names conflict.
+  study: section-1-concepts.md#13-why-use-an-mcp-server
+
+- id: 1-11
+  section: 1
+  objective: "1.4"
+  question: >-
+    Which TWO items are required in a skill's SKILL.md front matter? (Select two)
+  options:
+    a: name
+    b: version
+    c: description
+    d: author
+    e: mode
+  answer: [a, c]
+  explain: >-
+    SKILL.md needs YAML front matter with at least name and description. A skill without a
+    description is ignored.
+  study: section-1-concepts.md#14-structure-of-bob-skills
+
+- id: 1-12
+  section: 1
+  objective: "1.4"
+  question: >-
+    How does Bob decide to activate a skill?
+  options:
+    a: The user must type /skill-name every time
+    b: Bob compares the request with each skill's description and loads the relevant one
+    c: All skills load at the start of every conversation
+    d: Skills activate only from hooks
+  answer: [b]
+  explain: >-
+    Bob uses the description to determine relevance, then loads the instructions (once per
+    conversation) and can read supporting files. Rules are always active; skills are activated by Bob.
+  study: section-1-concepts.md#14-structure-of-bob-skills
+
+- id: 1-13
+  section: 1
+  objective: "1.3"
+  question: >-
+    A team wants to connect a community MCP server that can run SQL against production. What is the main security consideration?
+  options:
+    a: MCP servers cannot access external systems, so there is no risk
+    b: Adding a server expands what Bob can read or do, so it needs authentication, encryption, access controls and auditing
+    c: Only the server's name must be unique
+    d: MCP servers are sandboxed by .bobignore
+  answer: [b]
+  explain: >-
+    Every MCP server widens Bob's reach into the systems it can access. Trusted deployments
+    use authentication, encryption, access controls and auditing; prefer read-only tools.
+  study: section-1-concepts.md#13-why-use-an-mcp-server
+
+# ----------------------------------------------------------------- Section 2
+- id: 2-01
+  section: 2
+  objective: "2.1"
+  question: >-
+    Which tool group is the only file-related group available in the read-only Ask mode?
+  options:
+    a: edit
+    b: execute
+    c: read
+    d: subtask
+  answer: [c]
+  explain: >-
+    Ask mode uses the read group (read_file, glob, grep, list_files, symbol tools). It
+    cannot edit files or run commands.
+  study: section-2-core-features.md#21-use-bobs-file-system-to-read-create-and-modify-project-files
+
+- id: 2-02
+  section: 2
+  objective: "2.2"
+  question: >-
+    A team wants a "Security Reviewer" persona that can read everything but can never edit
+    source code or run commands. What should they create?
+  options:
+    a: A rule saying "do not edit files"
+    b: A custom mode with only the read group (and optionally an edit group restricted to report files)
+    c: A skill named security-review
+    d: A SessionStart hook
+  answer: [b]
+  explain: >-
+    Custom modes enforce tool access. A rule only asks Bob to behave; a mode without edit and
+    execute groups cannot use them.
+  study: section-2-core-features.md#22-add-a-custom-mode
+
+- id: 2-03
+  section: 2
+  objective: "2.2"
+  question: >-
+    Where should a team keep a custom mode so every developer who clones the repository gets it?
+  options:
+    a: ~/.bob/settings/custom_modes.yaml
+    b: .bob/custom_modes.yaml
+    c: AGENTS.md
+    d: .bob/skills/modes.md
+  answer: [b]
+  explain: >-
+    Project modes in .bob/custom_modes.yaml are version-controlled and shared. The global file
+    is personal.
+  study: section-2-core-features.md#22-add-a-custom-mode
+
+- id: 2-04
+  section: 2
+  objective: "2.3"
+  question: >-
+    Which statement about IBM Bob premium packages is correct?
+  options:
+    a: They are required for Bob to work
+    b: They are optional add-ons with specialized capabilities for specific platforms and modernization workflows
+    c: They replace Bob Shell
+    d: They are free for all plans
+  answer: [b]
+  explain: >-
+    Premium packages (Java Modernization, Z, i) are optional, entitlement-based add-ons.
+    Install from the in-app notification; update via Extensions or Install from VSIX.
+  study: section-2-core-features.md#23-purpose-of-ibm-premium-packages
+
+- id: 2-05
+  section: 2
+  objective: "2.4"
+  question: >-
+    Which is a documented limitation of .bobignore?
+  options:
+    a: It only works for Python projects
+    b: It cannot use wildcards
+    c: Protection for execute_command is limited to a predefined list of file-reading commands
+    d: It must be placed in ~/.bob/
+  answer: [c]
+  explain: >-
+    .bobignore is workspace-only, not a sandbox, and execute_command is only checked for
+    known file-reading commands. It lives in the workspace root and uses .gitignore syntax.
+  study: section-2-core-features.md#24-role-of-bobignore
+
+- id: 2-06
+  section: 2
+  objective: "2.5"
+  question: >-
+    A developer needs to design the approach for splitting a large RPG program into a service
+    program before any code is written. Which built-in mode fits?
+  options:
+    a: Agent
+    b: Plan
+    c: Ask
+    d: Orchestrator
+  answer: [b]
+  explain: Plan mode is for architecture, design and implementation planning before coding.
+  study: section-2-core-features.md#25-the-three-default-modes
+
+- id: 2-07
+  section: 2
+  objective: "2.5"
+  question: >-
+    What is the commonly recommended mode workflow?
+  options:
+    a: Agent → Plan → Ask
+    b: Ask → Agent → Plan
+    c: Plan → Agent → Ask (when needed)
+    d: Agent only
+  answer: [c]
+  explain: >-
+    Plan, then implement in Agent, and use Ask when you need information without risking code changes.
+  study: section-2-core-features.md#25-the-three-default-modes
+
+- id: 2-08
+  section: 2
+  objective: "2.6"
+  question: >-
+    A Bob SaaS user wants to force the most powerful model for a difficult refactor. What happens?
+  options:
+    a: They select it from the model dropdown
+    b: They set it in AGENTS.md
+    c: They cannot pick the model; Bob routes tasks automatically by complexity, capability, context size and cost
+    d: They must buy an Ultra plan to choose models
+  answer: [c]
+  explain: Bob SaaS users cannot manually pick the LLM; Bob selects the appropriate model per task.
+  study: section-2-core-features.md#26-how-bob-selects-llm-models
+
+- id: 2-09
+  section: 2
+  objective: "2.7"
+  question: >-
+    Which command starts an interactive Bob Shell session?
+  options:
+    a: bob run
+    b: bob chat
+    c: bob init
+    d: bob --format json
+  answer: [b]
+  explain: bob chat is interactive; bob run is non-interactive (scripts, CI/CD).
+  study: section-2-core-features.md#27-use-bob-shell-from-the-command-line
+
+- id: 2-10
+  section: 2
+  objective: "2.7"
+  question: >-
+    While in a Bob Shell session, a developer wants to re-run a failing makei command to see its
+    error without leaving Bob. What should they use?
+  options:
+    a: Shell mode, toggled with ! on an empty input
+    b: /init
+    c: Plan mode
+    d: A PostToolUse hook
+  answer: [a]
+  explain: The ! prefix toggles shell mode in Bob Shell for running and diagnosing shell commands.
+  study: section-2-core-features.md#27-use-bob-shell-from-the-command-line
+
+- id: 2-11
+  section: 2
+  objective: "2.8"
+  question: >-
+    In Bob v2's architecture, which component provides reasoning and code generation?
+  options:
+    a: The harness
+    b: The client
+    c: The agent
+    d: The MCP server
+  answer: [c]
+  explain: >-
+    Agent = reasoning and code generation; harness = runtime services such as authentication,
+    logging and telemetry; clients = user interfaces (IDE, Shell).
+  study: section-2-core-features.md#28-components-of-bobs-architecture
+
+- id: 2-12
+  section: 2
+  objective: "2.9"
+  question: >-
+    Which activity best shows Bob supporting multiple parts of the SDLC?
+  options:
+    a: Hosting the team's Git repositories
+    b: Planning a feature, implementing it, writing tests, creating the pull request and modernizing old code
+    c: Running the company's payroll system
+    d: Replacing the IBM i operating system
+  answer: [b]
+  explain: Bob works across planning, design, coding, testing, deployment, operations and modernization.
+  study: section-2-core-features.md#29-bob-as-ai-development-partner-across-the-sdlc
+
+- id: 2-13
+  section: 2
+  objective: "2.10"
+  question: >-
+    Where can an individual developer quickly see current Bobcoin usage in the IDE?
+  options:
+    a: By hovering over the gauge in the top-right corner of the Bob panel
+    b: In AGENTS.md
+    c: In the Problems panel
+    d: Only by asking an administrator
+  answer: [a]
+  explain: Hover the gauge, or open Settings → General; Bobalytics shows patterns over time.
+  study: section-2-core-features.md#210-monitor-usage-and-bobcoins-with-bobalytics
+
+- id: 2-14
+  section: 2
+  objective: "2.11"
+  question: >-
+    How does Bob primarily reduce token cost?
+  options:
+    a: By refusing long prompts
+    b: By multi-model orchestration that routes each task to a suitable model instead of always the most capable one
+    c: By deleting older messages after each reply
+    d: By compressing source files on disk
+  answer: [b]
+  explain: Intelligent routing sends simple tasks to faster, cheaper models.
+  study: section-2-core-features.md#211-how-bob-optimizes-token-consumption-intelligent-routing
+
+- id: 2-15
+  section: 2
+  objective: "2.12"
+  question: >-
+    A developer selects an RPG procedure and wants a quick explanation without opening the chat
+    first. Which is a valid way?
+  options:
+    a: Lightbulb or right-click → Bob → Explain with Bob
+    b: Create a new custom mode
+    c: Run bob run in a terminal
+    d: Add the code to .bobignore
+  answer: [a]
+  explain: >-
+    Code actions (lightbulb, context menu, Ctrl/Cmd + .) offer Add to Context, Explain,
+    Improve, Inline Chat and Move to Chat.
+  study: section-2-core-features.md#212-different-ways-of-using-code-functions
+
+- id: 2-16
+  section: 2
+  objective: "2.14"
+  question: >-
+    Which list correctly names the context window categories?
+  options:
+    a: Agent, Plan, Ask
+    b: System prompt, tool definitions, MCP tools, rules, skills, messages
+    c: Read, edit, execute, MCP, skill, todo, subtask, subagent, mode
+    d: AGENTS.md, prompts, skills, MCP
+  answer: [b]
+  explain: These six categories appear in the token usage breakdown.
+  study: section-2-core-features.md#214-define-and-identify-the-context-window
+
+- id: 2-17
+  section: 2
+  objective: "2.13"
+  question: >-
+    Why should a team connect only the MCP servers a task actually needs?
+  options:
+    a: Bob can connect to only one MCP server at a time
+    b: Every connected server's tool definitions occupy the context window and add tokens to every prompt
+    c: MCP servers disable rules while connected
+    d: Unused servers make Bob switch to Ask mode
+  answer: [b]
+  explain: >-
+    MCP uses a client-server architecture over JSON-RPC 2.0, and connected tools' definitions
+    count in the context window (the MCP tools category). MCP can use many tokens, so the use case matters.
+  study: section-2-core-features.md#213-integrate-bob-with-external-tools-through-mcp
+
+- id: 2-18
+  section: 2
+  objective: "2.15"
+  question: >-
+    A company wants one documentation standard applied in every project its developers open, while each repository adds its own conventions. What fits best?
+  options:
+    a: Global rules for the company standard plus project rules in each repository
+    b: A custom mode per project
+    c: A skill that each developer must remember to activate
+    d: Pasting the standard into every prompt
+  answer: [a]
+  explain: >-
+    Custom rules can be global (all projects) or project-level, for all modes or mode-specific.
+    Combining both is the hybrid approach for organization-wide plus repo-specific standards.
+  study: section-2-core-features.md#215-standardize-bob-behaviour-with-rules
+
+# ----------------------------------------------------------------- Section 3
+- id: 3-01
+  section: 3
+  objective: "3.1"
+  question: >-
+    Bob produced a plan in Plan mode. Which is NOT one of the things to inspect before implementing?
+  options:
+    a: Scope match
+    b: Unwanted assumptions
+    c: Acceptance criteria
+    d: The number of Bobcoins the plan text used
+  answer: [d]
+  explain: >-
+    Inspect scope match, decisions, implementation sequence, acceptance criteria and unwanted
+    assumptions, then refine and apply the approved plan in Agent mode.
+  study: section-3-use-cases.md#31-create-inspect-and-refine-a-plan-before-coding
+
+- id: 3-02
+  section: 3
+  objective: "3.1"
+  question: >-
+    What should a good planning prompt include?
+  options:
+    a: Only the ticket number
+    b: Scope, affected layers, constraints and acceptance criteria
+    c: The full source of every program
+    d: The developer's job title
+  answer: [b]
+  explain: Planning prompts should state scope, affected layers, constraints and acceptance criteria.
+  study: section-3-use-cases.md#31-create-inspect-and-refine-a-plan-before-coding
+
+- id: 3-03
+  section: 3
+  objective: "3.2"
+  question: >-
+    When is literate coding the best choice over chat-based Agent mode?
+  options:
+    a: When the change spans many files and needs commands run
+    b: When the change is local to a specific file or code block and you want an inline diff
+    c: When you need a project-wide refactor
+    d: When you want Bob to create a pull request
+  answer: [b]
+  explain: Literate coding is in-editor, at a precise location, single-file, with inline diff review.
+  study: section-3-use-cases.md#32-literate-coding-create-code-from-comments
+
+- id: 3-04
+  section: 3
+  objective: "3.2"
+  question: >-
+    After literate coding generates code, the inline diff does not match the intended behaviour. What should the developer do?
+  options:
+    a: Accept it and fix it later
+    b: Reject the generated change and refine the instructions
+    c: Commit it so rollback can restore it
+    d: Switch to Ask mode to accept it
+  answer: [b]
+  explain: Inspect the inline diff; accept only when it matches, otherwise reject.
+  study: section-3-use-cases.md#32-literate-coding-create-code-from-comments
+
+- id: 3-05
+  section: 3
+  objective: "3.3"
+  question: >-
+    Which TWO are part of inspecting Bob-generated output before accepting it? (Select two)
+  options:
+    a: Reviewing the code diff
+    b: Checking test and build results
+    c: Counting the words in Bob's reply
+    d: Restarting the IDE
+    e: Changing the color theme
+  answer: [a, b]
+  explain: Inspect code diffs, test results, build output, command output and do a manual review.
+  study: section-3-use-cases.md#33-core-sdlc-capabilities-understand-generate-modify-document-automate
+
+- id: 3-06
+  section: 3
+  objective: "3.4"
+  question: >-
+    The team wants every RPG change to check SQLSTATE after embedded SQL, in every conversation. Which mechanism fits best?
+  options:
+    a: A skill
+    b: A rule
+    c: A hook
+    d: A subtask
+  answer: [b]
+  explain: Rules give persistent, always-active guidance for coding style and conventions.
+  study: section-3-use-cases.md#34-when-to-use-modes-skills-rules-hooks-and-agentsmd
+
+- id: 3-07
+  section: 3
+  objective: "3.4"
+  question: >-
+    Which mechanism is activated by Bob itself, based on the request?
+  options:
+    a: Rules
+    b: Custom modes
+    c: Skills
+    d: AGENTS.md
+  answer: [c]
+  explain: Rules are always active, modes are activated by the user, and skills are activated by Bob.
+  study: section-3-use-cases.md#34-when-to-use-modes-skills-rules-hooks-and-agentsmd
+
+- id: 3-08
+  section: 3
+  objective: "3.4"
+  question: >-
+    A team wants to automatically log every tool Bob runs to an audit file. Which mechanism?
+  options:
+    a: A PostToolUse hook
+    b: A rule
+    c: AGENTS.md
+    d: Plan mode
+  answer: [a]
+  explain: Hooks automate lifecycle actions before, during or after Bob activity.
+  study: section-3-use-cases.md#34-when-to-use-modes-skills-rules-hooks-and-agentsmd
+
+- id: 3-09
+  section: 3
+  objective: "3.5"
+  question: >-
+    A nightly CI job should review changed RPG files and emit JSON for the pipeline. Which is the right fit?
+  options:
+    a: Bob IDE with literate coding
+    b: Bob Shell non-interactive (bob run --format json)
+    c: Bob Shell interactive (bob chat)
+    d: Code actions
+  answer: [b]
+  explain: Non-interactive Bob Shell suits CI/CD, batch processing and structured output.
+  study: section-3-use-cases.md#35-bob-shell-vs-bob-ide
+
+- id: 3-10
+  section: 3
+  objective: "3.6"
+  question: >-
+    Bob generates Terraform for a new environment. What is Terraform's role?
+  options:
+    a: It reviews Bob's code
+    b: It provisions the infrastructure; Bob is the development partner
+    c: It replaces Bob's agent
+    d: It hosts the MCP server
+  answer: [b]
+  explain: Bob generates and validates; the external tool (Terraform) is the execution system.
+  study: section-3-use-cases.md#36-bob-alone-vs-with-specialized-tools-or-external-applications
+
+- id: 3-11
+  section: 3
+  objective: "3.7"
+  question: >-
+    Which statement correctly distinguishes subagents from subtasks?
+  options:
+    a: Subagents appear as visible interactive threads; subtasks run silently
+    b: Subagents run silently in the background and return a summary; subtasks are visible, interactive threads with their own tracking
+    c: They are the same feature with different names
+    d: Subtasks can only read files
+  answer: [b]
+  explain: Use subagents for self-contained background work; subtasks for visible, tracked threads.
+  study: section-3-use-cases.md#37-subagents-and-subtasks
+
+- id: 3-12
+  section: 3
+  objective: "3.8"
+  question: >-
+    Which approach does Bob support for modernizing a large legacy application?
+  options:
+    a: A big-bang rewrite generated in one prompt
+    b: "Incremental modernization: discovery, specs and plans first, then validated changes step by step"
+    c: Code changes first, then documentation of what was changed
+    d: Skipping builds and tests to save Bobcoins
+  answer: [b]
+  explain: Analyze, inspect, plan and specify before code, validate with builds and tests, and modernize incrementally.
+  study: section-3-use-cases.md#38-modernize-applications-using-bob
+
+- id: 3-13
+  section: 3
+  objective: "3.11"
+  question: >-
+    A developer wants Bob's code review to include local edits that are not yet committed. What should they do?
+  options:
+    a: Commit first; reviews never include uncommitted changes
+    b: Toggle "Include Uncommitted Changes" in the Review panel
+    c: Add the files to .bobignore
+    d: Use literate coding
+  answer: [b]
+  explain: >-
+    The Review workflow can include uncommitted changes (on by default when reviewing the
+    current branch). Findings appear in Bob Findings with Fix with Bob and Dismiss.
+  study: section-3-use-cases.md#311-code-review-and-bob-findings
+
+- id: 3-14
+  section: 3
+  objective: "3.9"
+  question: >-
+    A developer used Bob to generate an MCP server with three tools for an internal API. What best demonstrates end-to-end verification?
+  options:
+    a: Reading the generated code once
+    b: Building an MCP client (or connecting the server to Bob) and calling each tool against the real API, then fixing errors found
+    c: Counting the number of generated files
+    d: Asking Bob in Ask mode whether the code looks correct
+  answer: [b]
+  explain: >-
+    When building agents and MCP tools with Bob, construct an MCP client to test tools end to
+    end, modify code/config/agent YAML when validation fails, and demonstrate the working result.
+  study: section-3-use-cases.md#39-build-ai-agents-using-bob
+
+- id: 3-15
+  section: 3
+  objective: "3.10"
+  question: >-
+    A batch program fails with RNX0907 (decimal data error). The developer first wants to understand the likely cause without any file changes. Which mode?
+  options:
+    a: Agent mode
+    b: Ask mode
+    c: Plan mode with auto-approve on
+    d: A custom mode with execute only
+  answer: [b]
+  explain: >-
+    Use Ask mode for explanation and analysis without file changes. Switch to Agent mode
+    when code fixes, edits or command execution are needed, then re-run tests and builds to confirm.
+  study: section-3-use-cases.md#310-debug-application-problems-with-bob
+
+# ----------------------------------------------------------------- Section 4
+- id: 4-01
+  section: 4
+  objective: "4.1"
+  question: >-
+    Which subagent type is read-only and runs on a lighter model?
+  options:
+    a: general
+    b: explore
+    c: orchestrator
+    d: reviewer
+  answer: [b]
+  explain: explore is read-only on a lighter model; general has full tool access on the default model.
+  study: section-4-configuration.md#41-tools-read-command-subtask-mcp
+
+- id: 4-02
+  section: 4
+  objective: "4.1"
+  question: >-
+    Which tool runs CLI commands such as builds and tests in the workspace?
+  options:
+    a: apply_diff
+    b: use_skill
+    c: execute_command
+    d: update_todo_list
+  answer: [c]
+  explain: execute_command belongs to the execute (command) group.
+  study: section-4-configuration.md#41-tools-read-command-subtask-mcp
+
+- id: 4-03
+  section: 4
+  objective: "4.2"
+  question: >-
+    What is the per-task context window cap, and around when does automatic condensation begin?
+  options:
+    a: 128,000 cap; condensation at 100,000
+    b: 270,000 cap; condensation around 190,000
+    c: 1,000,000 cap; no condensation
+    d: 270,000 cap; condensation at 260,000
+  answer: [b]
+  explain: Each task has a 270,000-token cap; condensation typically starts around 190,000.
+  study: section-4-configuration.md#42-utilize-context-window-management
+
+- id: 4-04
+  section: 4
+  objective: "4.2"
+  question: >-
+    Which context category usually becomes the largest once Bob starts reading files and running tools?
+  options:
+    a: System prompt
+    b: Tool definitions
+    c: Messages
+    d: Skills
+  answer: [c]
+  explain: Messages grow every turn and with repo exploration. System prompt and tool definitions stay flat.
+  study: section-4-configuration.md#42-utilize-context-window-management
+
+- id: 4-05
+  section: 4
+  objective: "4.3"
+  question: >-
+    A developer mentions @qrpglesrc/ in a prompt. What does Bob include?
+  options:
+    a: All files in qrpglesrc/ and every subfolder
+    b: Only files directly in qrpglesrc/ (non-recursive)
+    c: Only the folder name
+    d: Nothing; folders cannot be mentioned
+  answer: [b]
+  explain: Folder mentions are non-recursive.
+  study: section-4-configuration.md#43-context-mentions-
+
+- id: 4-06
+  section: 4
+  objective: "4.3"
+  question: >-
+    Which context mentions still respect .gitignore?
+  options:
+    a: File mentions
+    b: Folder mentions
+    c: Git mentions such as @git-changes and @<commit-hash>
+    d: URL mentions
+  answer: [c]
+  explain: File and folder mentions bypass .bobignore and .gitignore; Git mentions use Git, so they respect .gitignore.
+  study: section-4-configuration.md#43-context-mentions-
+
+- id: 4-07
+  section: 4
+  objective: "4.4"
+  question: >-
+    How do you install the Bob Shell companion extension manually when Bob Shell runs in Bob IDE's terminal?
+  options:
+    a: /ide install
+    b: bob run --install
+    c: /init
+    d: Add it to mcp.json
+  answer: [a]
+  explain: Use /ide install; /ide enable, /ide disable and /ide status manage the connection.
+  study: section-4-configuration.md#44-download-extensions
+
+- id: 4-08
+  section: 4
+  objective: "4.5"
+  question: >-
+    Which parameter is required for a STDIO MCP server, and which for a Streamable HTTP server?
+  options:
+    a: url for STDIO; command for HTTP
+    b: command for STDIO; url for HTTP
+    c: env for both
+    d: alwaysAllow for both
+  answer: [b]
+  explain: STDIO needs command (plus optional args, cwd, env, alwaysAllow, disabled); remote needs url (plus headers...).
+  study: section-4-configuration.md#45-develop-and-add-mcp-tools
+
+- id: 4-09
+  section: 4
+  objective: "4.5"
+  question: >-
+    A project handles confidential customer data. Which MCP transport keeps traffic off the network?
+  options:
+    a: STDIO (Bob spawns the server as a local child process)
+    b: Streamable HTTP
+    c: SSE
+    d: Any transport, as long as alwaysAllow is empty
+  answer: [a]
+  explain: STDIO is local, low latency and has no network exposure. Prefer local servers for confidential projects.
+  study: section-4-configuration.md#45-develop-and-add-mcp-tools
+
+- id: 4-10
+  section: 4
+  objective: "4.6"
+  question: >-
+    A custom mode defined in YAML has no groups key. What tool access does it get?
+  options:
+    a: All tools
+    b: Read only
+    c: No grouped tools
+    d: The same as Agent mode
+  answer: [c]
+  explain: Omitting groups grants no grouped tools. Unknown group names also grant nothing.
+  study: section-4-configuration.md#46-create-custom-modes
+
+- id: 4-11
+  section: 4
+  objective: "4.8"
+  question: >-
+    In what order are rules loaded within one level (global or workspace)?
+  options:
+    a: General rules → AGENTS.md → mode-specific rules
+    b: Mode-specific rules → AGENTS.md → general rules
+    c: AGENTS.md → general → mode-specific
+    d: Random order
+  answer: [b]
+  explain: Global loads before workspace; within each level, mode-specific → AGENTS.md → general, alphabetically.
+  study: section-4-configuration.md#48-custom-rules-global-vs-project
+
+- id: 4-12
+  section: 4
+  objective: "4.9"
+  question: >-
+    What is required before Bob can generate and create a pull request from the IDE?
+  options:
+    a: Changes committed to a branch and push access to the remote repository
+    b: A PR template in .github/
+    c: An Enterprise plan
+    d: An MCP server for GitHub
+  answer: [a]
+  explain: >-
+    Commit to a branch and have push access. Templates are optional; without one Bob uses a
+    default template (title, summary, implementation details, testing, links).
+  study: section-4-configuration.md#49-generate-pull-requests-from-the-ide
+
+- id: 4-13
+  section: 4
+  objective: "4.7"
+  question: >-
+    A developer has a global skill named code-review and the project also contains .bob/skills/code-review/. Which one does Bob use in that project, and how can they confirm it?
+  options:
+    a: The global skill; check AGENTS.md
+    b: The project skill; check the Skills settings tab, which shows loaded skills and their location
+    c: Both are merged; check the Problems panel
+    d: Neither; duplicate names disable both
+  answer: [b]
+  explain: >-
+    Project skills take precedence over global skills with the same name. The Skills settings
+    tab shows which skills are loaded and from where. Settings → Auto-Approve → Skills removes the activation prompt.
+  study: section-4-configuration.md#47-develop-bob-skills
+
+# ----------------------------------------------------------------- Section 5
+- id: 5-01
+  section: 5
+  objective: "5.1"
+  question: >-
+    What does the Bob factor metric in Bobalytics represent?
+  options:
+    a: The number of prompts per user
+    b: The percentage of committed code created by Bob
+    c: The Bobcoin price
+    d: The number of MCP servers
+  answer: [b]
+  explain: Bob factor = Bob's contribution to the codebase (share of committed lines Bob created).
+  study: section-5-accounts.md#51-administer-bobalytics
+
+- id: 5-02
+  section: 5
+  objective: "5.1"
+  question: >-
+    What can an administrator see about an individual developer from a team-level Bobalytics chart?
+  options:
+    a: Their full prompt history
+    b: Their Bobcoin spend by name
+    c: Nothing individually identifiable; team charts are anonymized
+    d: Their source code
+  answer: [c]
+  explain: Bobalytics gives team-level insights without exposing individual user data to admins.
+  study: section-5-accounts.md#51-administer-bobalytics
+
+- id: 5-03
+  section: 5
+  objective: "5.2"
+  question: >-
+    A CI pipeline runs Bob Shell with a General API key and fails authentication for inference. What is missing?
+  options:
+    a: A team ID (--team-id)
+    b: A PR template
+    c: An MCP server
+    d: Plan mode
+  answer: [a]
+  explain: General keys are instance-wide and need a team ID for inference. Inference keys are already team-scoped.
+  study: section-5-accounts.md#52-authenticate-with-api-keys
+
+- id: 5-04
+  section: 5
+  objective: "5.3"
+  question: >-
+    Which capability is specific to the Enterprise plan?
+  options:
+    a: Using Ask mode
+    b: SSO with SAML or OIDC identity providers and shared Bobcoin pools with spending limits
+    c: Running /init
+    d: Writing custom rules
+  answer: [b]
+  explain: Enterprise adds team management, shared Bobcoin allocation, spending limits, Bobalytics and SSO (SAML/OIDC).
+  study: section-5-accounts.md#53-enterprise-plan-features
+
+- id: 5-05
+  section: 5
+  objective: "5.4"
+  question: >-
+    What is the relationship between tokens and Bobcoins?
+  options:
+    a: They are identical units
+    b: Tokens are raw model usage units; Bobcoins abstract token usage into a predictable billing metric
+    c: Bobcoins count only output tokens
+    d: Tokens are billed in USD, Bobcoins are free
+  answer: [b]
+  explain: Bobcoins combine token usage across models and operations into one consumption metric.
+  study: section-5-accounts.md#54-bobcoins
+
+- id: 5-06
+  section: 5
+  objective: "5.5"
+  question: >-
+    Late in a long task, a developer's one-line question uses far more tokens than the same
+    question did at the start. Why?
+  options:
+    a: The system prompt grows after each response
+    b: The full active context, including all accumulated messages, is processed again with each prompt
+    c: Bob switches to a more expensive model after 10 messages
+    d: Short prompts are billed at a minimum size
+  answer: [b]
+  explain: Every prompt re-sends the whole active context, so a growing Messages category raises the cost of later prompts.
+  study: section-5-accounts.md#55-token-usage-for-prompting
+
+# ----------------------------------------------------------------- Section 6
+- id: 6-01
+  section: 6
+  objective: "6.1"
+  question: >-
+    A developer enables auto-approval for Edit using the Permissions control beside the mode selector for the current task. What is the scope?
+  options:
+    a: All future tasks for that user
+    b: All users in the organization
+    c: The current task only; it does not become a global permission
+    d: Until the IDE restarts
+  answer: [c]
+  explain: Task-level approvals override the normal approval experience for that task only.
+  study: section-6-security.md#61-modify-mode-permissions-in-a-contexttask
+
+- id: 6-02
+  section: 6
+  objective: "6.2"
+  question: >-
+    Bob keeps building on an earlier wrong assumption even after several corrective prompts.
+    What is the most reliable fix?
+  options:
+    a: Add the correction to every prompt
+    b: Start a fresh task with a narrow scope and only targeted evidence
+    c: Enable auto-approve so Bob works faster
+    d: Add more MCP servers
+  answer: [b]
+  explain: >-
+    That's context poisoning. Bad content persists in Messages; a new task with lean,
+    targeted context is the reliable recovery.
+  study: section-6-security.md#62-reduce-context-poisoning
+
+- id: 6-03
+  section: 6
+  objective: "6.2"
+  question: >-
+    Which practice helps PREVENT context poisoning during a broad codebase investigation?
+  options:
+    a: Paste the entire repository into the chat
+    b: Use subagents so the main task receives only condensed findings
+    c: Keep one task open for all work this week
+    d: Load every available skill at the start
+  answer: [b]
+  explain: Subagents keep intermediate reads out of the main context; keep standing context lean and evidence targeted.
+  study: section-6-security.md#62-reduce-context-poisoning
+
+- id: 6-04
+  section: 6
+  objective: "6.3"
+  question: >-
+    A documentation mode must only be able to edit Markdown files. How is this enforced?
+  options:
+    a: A rule that says "only edit .md files"
+    b: An edit group with a fileRegex such as .*\.md$ in the mode definition
+    c: Adding source files to .gitignore
+    d: A SessionStart hook
+  answer: [b]
+  explain: fileRegex on the edit group restricts which files a mode can change.
+  study: section-6-security.md#63-identify-and-enable-correct-permission-restrictions-for-projects
+
+- id: 6-05
+  section: 6
+  objective: "6.4"
+  question: >-
+    Which TWO statements about .bobignore are true? (Select two)
+  options:
+    a: Bob monitors it and reloads changes automatically
+    b: It is a full system-level sandbox
+    c: The .bobignore file itself is implicitly ignored, so Bob cannot change its own access rules
+    d: It must be named .bob/ignore.json
+    e: It blocks mode switching
+  answer: [a, c]
+  explain: It auto-reloads and is implicitly ignored itself. It is not a sandbox, lives in the workspace root as .bobignore, and doesn't affect mode switching.
+  study: section-6-security.md#64-produce-a-bobignore-file
+
+- id: 6-06
+  section: 6
+  objective: "6.4"
+  question: >-
+    Which pattern in .bobignore re-allows a file excluded by a broader rule?
+  options:
+    a: "#important.log"
+    b: "!important.log"
+    c: "+important.log"
+    d: "allow: important.log"
+  answer: [b]
+  explain: .gitignore syntax uses ! for exceptions (e.g. !.env.example).
+  study: section-6-security.md#64-produce-a-bobignore-file
+
+- id: 6-07
+  section: 6
+  objective: "6.5"
+  question: >-
+    Which permissions does IBM classify as high risk?
+  options:
+    a: Read and Skill
+    b: Edit and Execute
+    c: Todo and Mode
+    d: Subtask and Subagent
+  answer: [b]
+  explain: Edit and Execute are high; MCP is medium-high; Read and Skill medium; Todo, Subtask, Subagent, Mode low.
+  study: section-6-security.md#65-correct-permissions-and-approval-workflows
+
+- id: 6-08
+  section: 6
+  objective: "6.5"
+  question: >-
+    Bob proposes a terminal command that is almost right but targets the wrong library. What can the developer do?
+  options:
+    a: Only approve or reject; commands cannot be changed
+    b: Edit the command directly in the approval prompt before running it
+    c: Restart the task
+    d: Disable the execute group globally
+  answer: [b]
+  explain: Terminal commands proposed by Bob can be edited in the approval prompt before execution.
+  study: section-6-security.md#65-correct-permissions-and-approval-workflows
+
+- id: 6-09
+  section: 6
+  objective: "6.6"
+  question: >-
+    Bob needs a token to call an internal test-results service. What is the recommended approach?
+  options:
+    a: Paste it in the chat and delete the message afterwards
+    b: Put it in AGENTS.md so Bob always has it
+    c: Store it in an approved secrets solution and provide it at runtime
+    d: Hard-code it in mcp.json and commit it
+  answer: [c]
+  explain: Never place secrets in prompts or Bob-readable files. Use secrets management and runtime injection.
+  study: section-6-security.md#66-best-security-practices
+
+- id: 6-10
+  section: 6
+  objective: "6.7"
+  question: >-
+    When does Bob create rollback snapshots?
+  options:
+    a: Only when the developer commits
+    b: When a task begins and before file modifications, but not automatically before terminal commands
+    c: Before every terminal command
+    d: Only when requested manually
+  answer: [b]
+  explain: Snapshots are stored in a shadow Git repo at task start and before file edits; terminal commands don't trigger them.
+  study: section-6-security.md#67-rollback-changes
+
+- id: 6-11
+  section: 6
+  objective: "6.7"
+  question: >-
+    A developer wants to undo Bob's file changes but keep the conversation to try another approach. Which option?
+  options:
+    a: Restore files
+    b: Restore files and task
+    c: Delete the task
+    d: git reset --hard
+  answer: [a]
+  explain: >-
+    Restore files keeps conversation history. Restore files and task also removes later
+    messages, needs confirmation, and cannot be undone.
+  study: section-6-security.md#67-rollback-changes
+
+- id: 6-12
+  section: 6
+  objective: "6.3"
+  question: >-
+    A project contains scripts that deploy to production libraries. What is the appropriate permission posture?
+  options:
+    a: Enable auto-approve for Edit and Execute to avoid slowing developers down
+    b: Restricted project modes plus conservative auto-approve, keeping more manual approvals and narrower permissions than routine local work
+    c: Rely on .bobignore alone, since it sandboxes commands
+    d: Remove the project from version control
+  answer: [b]
+  explain: >-
+    Combine custom-mode restrictions (tool groups, fileRegex) with conservative auto-approve.
+    Sensitive or production-related work keeps more manual approvals. .bobignore is not a sandbox.
+  study: section-6-security.md#63-identify-and-enable-correct-permission-restrictions-for-projects

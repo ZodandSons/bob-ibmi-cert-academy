@@ -1,0 +1,45 @@
+# =============================================================================
+# .bobignore — files and folders Bob must never read or edit
+# =============================================================================
+# Lives in the WORKSPACE ROOT (next to .git), not inside .bob/.
+# Same pattern syntax as .gitignore:  dir/   *.ext   path/file   **/   !exception
+#
+# What it does
+#   - Bob's file tools (read, write, apply_diff, insert, search) refuse matching files.
+#   - Ignored files are hidden (or shown with a lock) in Bob's file listings.
+#   - Common file-reading shell commands (cat, grep ...) on them are blocked.
+#   - Bob reloads it automatically when you save, and can never edit it itself.
+#
+# What it does NOT do
+#   - It does not stop YOU attaching a file with an @mention (@.env sends it anyway).
+#   - It is not a sandbox: other shell commands can still touch these files.
+#     Pair it with hooks (.bob/hooks/) and restricted modes for real protection.
+#   - It only applies inside the current workspace.
+#
+# Docs:  https://bob.ibm.com/docs/ide/configuration/bobignore
+# Guide: .bob/docs/02-agents-md-and-bobignore.md
+# =============================================================================
+
+# Credentials and connection details (keep .env.example readable as a template)
+.env
+.env.*
+!.env.example
+**/*.pem
+**/*.key
+**/secrets/**
+
+# Production data extracts and spooled output: may contain customer data
+data/extracts/**
+**/*.splf
+**/spool/**
+**/*.savf
+
+# Bob's own runtime logs, written by the hooks
+.bob/logs/**
+
+# Caches and virtual environments: large and useless to Bob.
+# (Build logs in .logs/ and .evfevent/ stay VISIBLE on purpose: the /build command
+#  reads compile errors from them.)
+**/__pycache__/**
+**/.venv/**
+node_modules/**

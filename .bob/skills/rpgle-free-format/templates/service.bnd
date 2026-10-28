@@ -1,0 +1,16 @@
+/* ****************************************************************  */
+/* Binder source for service program {SRVPGM}                        */
+/* RULES:                                                             */
+/*  - Only ever ADD new exports at the END of the current block.     */
+/*  - Never reorder or remove exports: callers bind by position.     */
+/*  - When adding exports, keep the old block as *PRV so existing     */
+/*    programs keep working without a rebind.                         */
+/* ****************************************************************  */
+STRPGMEXP PGMLVL(*CURRENT) SIGNATURE('{SRVPGM}_V0002')
+  EXPORT SYMBOL('Customer_GetName')
+  EXPORT SYMBOL('Customer_IsActive')
+ENDPGMEXP
+
+STRPGMEXP PGMLVL(*PRV) SIGNATURE('{SRVPGM}_V0001')
+  EXPORT SYMBOL('Customer_GetName')
+ENDPGMEXP

@@ -1,0 +1,3 @@
+!DLTBNDDIR BNDDIR(&O/&N)
+CRTBNDDIR BNDDIR(&O/&N) TEXT('Order management binding directory')
+ADDBNDDIRE BNDDIR(&O/&N) OBJ((*LIBL/ORDSRV *SRVPGM))

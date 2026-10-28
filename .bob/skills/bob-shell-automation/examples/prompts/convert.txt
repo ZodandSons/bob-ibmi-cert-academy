@@ -1,0 +1,13 @@
+Convert the fixed-format RPG source @{SOURCE} to fully free-format RPG IV.
+
+Follow the rpg-fixed-to-free skill exactly, including its guardrails:
+- Write the converted source to {TARGET}. Never modify {SOURCE}.
+- Run the inventory script first and the verification script after converting.
+- Fix every ERROR the verification script reports.
+- Write the conversion report to conversions/{NAME}.md.
+
+If the inventory risk level is HIGH (RPG cycle, level breaks, O-specs), do NOT convert.
+Instead write conversions/{NAME}.md explaining why it needs a human-led redesign.
+
+Your final message must be exactly one line:
+CONVERTED {TARGET}  or  SKIPPED-HIGH-RISK {SOURCE}  or  FAILED {SOURCE} <reason>

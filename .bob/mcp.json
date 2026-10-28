@@ -1,0 +1,33 @@
+{
+  "mcpServers": {
+    "ibmi-mcp": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@ibm/ibmi-mcp-server@latest",
+        "--tools",
+        ".bob/mcp-tools/ibmi-dev-tools.yaml"
+      ],
+      "cwd": "${workspaceFolder}",
+      "env": {
+        "DB2i_HOST": "${DB2i_HOST}",
+        "DB2i_USER": "${DB2i_USER}",
+        "DB2i_PASS": "${DB2i_PASS}",
+        "DB2i_PORT": "8076",
+        "DB2i_IGNORE_UNAUTHORIZED": "true",
+        "MCP_TRANSPORT_TYPE": "stdio"
+      },
+      "alwaysAllow": [],
+      "disabled": false
+    },
+    "ibmi-mcp-shared": {
+      "type": "streamable-http",
+      "url": "https://ibmi-mcp.example.internal:3010/mcp",
+      "headers": {
+        "Authorization": "Bearer ${IBMI_MCP_TOKEN}"
+      },
+      "disabled": true,
+      "alwaysAllow": []
+    }
+  }
+}

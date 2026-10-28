@@ -1,0 +1,98 @@
+/* ****************************************************************** */
+/* Program  : {PGMNAME}                                                */
+/* Purpose  : {one line describing what the program does}              */
+/* Author   : {author}                                                 */
+/* Created  : {YYYY-MM-DD}                                             */
+/* Parms    : &FROMDATE *CHAR 8  in  Start date YYYYMMDD               */
+/*            &TODATE   *CHAR 8  in  End date YYYYMMDD                 */
+/* Change log:                                                         */
+/*   {YYYY-MM-DD} {initials} Created                                   */
+/* ****************************************************************** */
+PGM        PARM(&FROMDATE &TODATE)
+
+/* ---- Parameters -------------------------------------------------- */
+DCL        VAR(&FROMDATE)  TYPE(*CHAR) LEN(8)
+DCL        VAR(&TODATE)    TYPE(*CHAR) LEN(8)
+
+/* ---- Work variables ---------------------------------------------- */
+DCL        VAR(&JOBTYPE)   TYPE(*CHAR) LEN(1)
+DCL        VAR(&COUNT)     TYPE(*INT)  LEN(4)  VALUE(0)
+DCL        VAR(&COUNTC)    TYPE(*CHAR) LEN(10)
+
+/* ---- Error-handling variables ------------------------------------ */
+DCL        VAR(&MSGID)     TYPE(*CHAR) LEN(7)
+DCL        VAR(&MSGDTA)    TYPE(*CHAR) LEN(256)
+DCL        VAR(&MSGF)      TYPE(*CHAR) LEN(10)
+DCL        VAR(&MSGFLIB)   TYPE(*CHAR) LEN(10)
+DCL        VAR(&ERRFLAG)   TYPE(*LGL)  VALUE('0')
+
+/* ---- Files ------------------------------------------------------- */
+DCLF       FILE(ORDHDR) OPNID(ORD)
+
+/* ---- Global error handler ---------------------------------------- */
+MONMSG     MSGID(CPF0000 MCH0000) EXEC(GOTO CMDLBL(ERROR))
+
+/* ================================================================== */
+/* Mainline                                                           */
+/* ================================================================== */
+RTVJOBA    TYPE(&JOBTYPE)            /* 0=batch 1=interactive        */
+
+CALLSUBR   SUBR(VALIDATE)
+
+/* Read all order headers, count those in range */
+DOWHILE    COND('1')
+   RCVF       OPNID(ORD)
+   MONMSG     MSGID(CPF0864) EXEC(LEAVE)   /* end of file            */
+   IF         COND(&ORD_OHDATE *GE &FROMDATE *AND +
+                   &ORD_OHDATE *LE &TODATE) THEN(DO)
+      CHGVAR     VAR(&COUNT) VALUE(&COUNT + 1)
+   ENDDO
+ENDDO
+
+/* Run the RPG processing program with an override to the date range */
+OVRDBF     FILE(ORDHDR) TOFILE(*LIBL/ORDHDR) SHARE(*NO)
+CALL       PGM(ORDPROC) PARM(&FROMDATE &TODATE)
+DLTOVR     FILE(ORDHDR)
+
+CHGVAR     VAR(&COUNTC) VALUE(%CHAR(&COUNT))
+SNDPGMMSG  MSGID(CPF9897) MSGF(QCPFMSG) +
+             MSGDTA('{PGMNAME} completed:' *BCAT %TRIM(&COUNTC) +
+             *BCAT 'orders processed') MSGTYPE(*COMP)
+RETURN
+
+/* ================================================================== */
+/* Error handler: clean up, then resend the original escape message.  */
+/* ================================================================== */
+ERROR:
+   IF         COND(&ERRFLAG) THEN(RETURN)   /* prevent error loop     */
+   CHGVAR     VAR(&ERRFLAG) VALUE('1')
+
+   DLTOVR     FILE(*ALL)
+   MONMSG     MSGID(CPF0000)
+
+   /* Move diagnostics to the caller, then resend the escape         */
+   RCVMSG     MSGTYPE(*EXCP) MSGDTA(&MSGDTA) MSGID(&MSGID) +
+                MSGF(&MSGF) SNDMSGFLIB(&MSGFLIB)
+   MONMSG     MSGID(CPF0000)
+   SNDPGMMSG  MSGID(&MSGID) MSGF(&MSGFLIB/&MSGF) MSGDTA(&MSGDTA) +
+                MSGTYPE(*ESCAPE)
+   MONMSG     MSGID(CPF0000)
+   RETURN
+
+/* ================================================================== */
+/* Subroutines (must follow all mainline code, just before ENDPGM)    */
+/* ================================================================== */
+SUBR       SUBR(VALIDATE)
+   IF         COND(&FROMDATE *GT &TODATE) THEN(DO)
+      SNDPGMMSG  MSGID(CPF9898) MSGF(QCPFMSG) +
+                   MSGDTA('From date is after to date') MSGTYPE(*ESCAPE)
+   ENDDO
+   CHKOBJ     OBJ(ORDPROC) OBJTYPE(*PGM)
+   MONMSG     MSGID(CPF9801) EXEC(DO)
+      SNDPGMMSG  MSGID(CPF9898) MSGF(QCPFMSG) +
+                   MSGDTA('Program ORDPROC not found in library list') +
+                   MSGTYPE(*ESCAPE)
+   ENDDO
+ENDSUBR
+
+ENDPGM

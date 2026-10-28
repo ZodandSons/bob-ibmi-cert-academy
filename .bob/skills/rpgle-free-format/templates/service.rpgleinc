@@ -1,0 +1,17 @@
+**free
+// ****************************************************************
+// Prototypes for service program {SRVPGM}
+// Include with: /copy qprotosrc,{srvpgm}
+// ****************************************************************
+/if defined({SRVPGM}_INCLUDED)
+/eof
+/endif
+/define {SRVPGM}_INCLUDED
+
+dcl-pr Customer_GetName varchar(50) extproc(*dclcase);
+  customerNo packed(7:0) const;
+end-pr;
+
+dcl-pr Customer_IsActive ind extproc(*dclcase);
+  customerNo packed(7:0) const;
+end-pr;

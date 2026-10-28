@@ -1,0 +1,18 @@
+# Secrets never go to git (defence in depth with .bobignore - see .bob/docs/02)
+.env
+.env.*
+!.env.example
+**/*.pem
+**/*.key
+
+# Optional: keep a personal MCP file out of git if it ever holds real values.
+# This example's .bob/mcp.json only contains ${VAR} references, so it IS committed.
+# .bob/mcp.json
+
+# Build output and local tooling
+.logs/
+.evfevent/
+__pycache__/
+.venv/
+plans/drafts/
+tmp/

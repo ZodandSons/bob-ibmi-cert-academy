@@ -1,0 +1,14 @@
+{
+  "description": "Order Management - IBM i",
+  "version": "1.0.0",
+  "license": "Proprietary",
+  "repository": "https://github.example.com/acme/order-management",
+  "objlib": "&DEVLIB",
+  "curlib": "&DEVLIB",
+  "includePath": ["qprotosrc"],
+  "preUsrlibl": ["ORDDTA"],
+  "postUsrlibl": ["QGPL"],
+  "setIBMiEnvCmd": [],
+  "buildCommand": "makei build",
+  "compileCommand": "makei compile -f {filename}"
+}

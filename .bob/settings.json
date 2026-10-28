@@ -1,0 +1,70 @@
+{
+  "hooks": {
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "sh .bob/hooks/session-context.sh",
+            "timeout": 10
+          }
+        ]
+      }
+    ],
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 .bob/hooks/block-secrets.py",
+            "timeout": 5
+          }
+        ]
+      }
+    ],
+    "PreToolUse": [
+      {
+        "matcher": "^execute_command$",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 .bob/hooks/guard-dangerous-commands.py",
+            "timeout": 5
+          }
+        ]
+      },
+      {
+        "matcher": "^(write_to_file|write_file|apply_diff|insert_content|search_and_replace)$",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 .bob/hooks/protect-paths.py",
+            "timeout": 5
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "sh .bob/hooks/log-activity.sh",
+            "timeout": 5
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "sh .bob/hooks/session-summary.sh",
+            "timeout": 10
+          }
+        ]
+      }
+    ]
+  }
+}

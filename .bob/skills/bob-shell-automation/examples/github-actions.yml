@@ -1,0 +1,54 @@
+# .github/workflows/bob-review.yml — AI review gate for IBM i pull requests.
+# Copy this file to .github/workflows/ and add a BOB_API_KEY repository secret.
+name: Bob IBM i review
+
+on:
+  pull_request:
+    paths:
+      - "**/*.rpgle"
+      - "**/*.sqlrpgle"
+      - "**/*.rpgleinc"
+      - "**/*.clle"
+      - "**/*.cmd"
+      - "qsqlsrc/**"
+
+jobs:
+  review:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0          # ci-review.sh diffs against the base branch
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install Bob Shell
+        # Requires Node.js 24+. Installer documented at https://bob.ibm.com/docs/shell/getting-started/install-and-setup
+        run: curl -fsSL https://bob.ibm.com/download/bobshell.sh | bash
+
+      - name: Static fixed-format check (no AI, no cost)
+        run: |
+          git diff --name-only --diff-filter=ACMR origin/${{ github.base_ref }}...HEAD -- '*.rpgle' '*.sqlrpgle' \
+            | grep -v '^qrpglesrc/legacy/' \
+            | xargs -r python3 .bob/skills/rpg-fixed-to-free/scripts/inventory_fixed.py --format markdown \
+            >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Bob review gate
+        env:
+          BOB_API_KEY: ${{ secrets.BOB_API_KEY }}
+          MAX_COST: "3"
+        run: bash .bob/skills/bob-shell-automation/scripts/ci-review.sh origin/${{ github.base_ref }}
+
+      - name: Publish review
+        if: always()
+        run: |
+          [ -f reviews/ci-review.md ] && cat reviews/ci-review.md >> "$GITHUB_STEP_SUMMARY" || true

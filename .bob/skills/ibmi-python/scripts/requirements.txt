@@ -1,0 +1,3 @@
+# Pick one backend (both is fine):
+mapepire-python>=0.1     # needs the Mapepire daemon on IBM i (yum install mapepire-server)
+# pyodbc>=5.0            # needs the IBM i Access ODBC driver installed locally
