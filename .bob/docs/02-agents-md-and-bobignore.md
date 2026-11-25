@@ -85,7 +85,7 @@ command needs Bob to read compile errors there. Ignore too much and Bob can't do
 - **`@` mentions bypass it.** If *you* type `@.env` in a prompt, the file's contents are
   sent anyway. `.bobignore` stops Bob from reaching for a file, not you from attaching it.
   (The `block-secrets.py` hook catches passwords typed into a prompt, but not attached files.)
-- **It is not a sandbox.** A shell command such as `python3 dump.py .env` is not checked.
+- **It is not a sandbox.** A shell command such as `python dump.py .env` is not checked.
 
 For real protection, combine it with:
 - **modes** without the `execute` group ([04](04-custom-modes.md)), and

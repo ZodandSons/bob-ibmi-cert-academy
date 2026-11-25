@@ -61,7 +61,7 @@ Try these in order. The guide in brackets explains what is happening.
    [→ 06 Slash commands](06-slash-commands.md)
 2. **Run a skill script yourself** to see what Bob will see:
    ```bash
-   python3 .bob/skills/rpg-fixed-to-free/scripts/inventory_fixed.py \
+   python .bob/skills/rpg-fixed-to-free/scripts/inventory_fixed.py \
            .bob/skills/rpg-fixed-to-free/examples/custinq-fixed.pgm.rpgle --format markdown
    ```
    [→ 05 Skills](05-skills.md)

@@ -76,8 +76,8 @@ It shows everything a skill can do:
 - A **worked example**: `examples/custinq-fixed.pgm.rpgle` and its annotated conversion.
 - **Deterministic scripts**, so correctness isn't left to the model:
   ```bash
-  python3 .bob/skills/rpg-fixed-to-free/scripts/inventory_fixed.py <src> --format markdown
-  python3 .bob/skills/rpg-fixed-to-free/scripts/verify_conversion.py <original> <converted>
+  python .bob/skills/rpg-fixed-to-free/scripts/inventory_fixed.py <src> --format markdown
+  python .bob/skills/rpg-fixed-to-free/scripts/verify_conversion.py <original> <converted>
   ```
   `verify_conversion.py` exits 1 when there are errors. Bob, the `rules-modernizer`
   checklist and the batch script all rely on that.
@@ -98,7 +98,7 @@ It shows everything a skill can do:
 - **Put verification in scripts.** Bob is good at following steps, and a script that
   fails loudly is better at proving the result.
 - Paths inside a skill are relative to the repo root when Bob runs them
-  (`python3 .bob/skills/...`). Write them out in full.
+  (`python .bob/skills/...`). Write them out in full.
 
 **Docs:** [Skills (IDE)](https://bob.ibm.com/docs/ide/features/skills) ·
 [Skills (Shell)](https://bob.ibm.com/docs/shell/features/skills) ·

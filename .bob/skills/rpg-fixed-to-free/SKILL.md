@@ -24,7 +24,7 @@ same behaviour as the original. Refactoring comes later, as a separate change.
 <Steps>
 <Step>
 **Inventory.** Run:
-`python3 .bob/skills/rpg-fixed-to-free/scripts/inventory_fixed.py <source> --format markdown`
+`python .bob/skills/rpg-fixed-to-free/scripts/inventory_fixed.py <source> --format markdown`
 
 It reports spec counts, every opcode used, numbered indicators, `MOVE`-family usage,
 `GOTO`/`TAG`/`CABxx`, `*ENTRY PLIST`, `KLIST`s, and a risk level. If the risk level is
@@ -57,7 +57,7 @@ this source. Every `MOVE`/`MOVEL`/`MOVEA` gets a `// CONV:` comment explaining t
 
 <Step>
 **Verify.** Run:
-`python3 .bob/skills/rpg-fixed-to-free/scripts/verify_conversion.py <original> <converted>`
+`python .bob/skills/rpg-fixed-to-free/scripts/verify_conversion.py <original> <converted>`
 
 Fix every ERROR. Review every WARNING and either fix it or explain it in the report.
 Then compile (`makei c -f <converted>`) and run RPGUnit tests if they exist.

@@ -54,7 +54,7 @@ Bob writes JSON to the script's **stdin**. For `PreToolUse`:
         "hooks": [                                      // omit matcher = every tool
           {
             "type": "command",                          // the only type supported
-            "command": "python3 .bob/hooks/guard-dangerous-commands.py",  // run from the repo root
+            "command": "python .bob/hooks/guard-dangerous-commands.py",  // run from the repo root
             "timeout": 5                                // seconds (default 10, 0 = none)
           }
         ]
@@ -90,7 +90,7 @@ sh .bob/hooks/test-hooks.sh          # runs 11 sample payloads through the hooks
 Or test one by hand, exactly as Bob would:
 ```bash
 echo '{"tool":"execute_command","input":{"command":"CLRPFM ORDDEV01/WORK"}}' \
-  | python3 .bob/hooks/guard-dangerous-commands.py; echo "exit=$?"
+  | python .bob/hooks/guard-dangerous-commands.py; echo "exit=$?"
 # Blocked by .bob/hooks/guard-dangerous-commands.py: destructive CL command CLRPFM ...
 # exit=2
 ```

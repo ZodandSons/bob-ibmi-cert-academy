@@ -41,17 +41,17 @@ in every section** of the practice quiz before booking the assessment test.
 | 6 | [Section 3](section-3-use-cases.md) §3.6–3.11 + guide [10](../10-ibmi-workflows.md) | `/impact-analysis` (subagents); Review panel + Findings |
 | 7 | [Section 4](section-4-configuration.md) + guides [06](../06-slash-commands.md), [07](../07-mcp-servers.md) | Add an MCP tool; create a PR with the template |
 | 8 | [Section 5](section-5-accounts.md) + [Section 6](section-6-security.md) + guide [08](../08-hooks.md) | `test-hooks.sh`; permissions and rollback lab |
-| 9 | `python3 quiz.py --exam`; re-read weak sections | Redo labs for missed objectives |
+| 9 | `python quiz.py --exam`; re-read weak sections | Redo labs for missed objectives |
 | 10 | [Cheat sheet](cheat-sheet.md); `quiz.py --exam` again; sample test again | Book the assessment if ≥ 80% everywhere |
 
 ## Run the practice quiz
 ```bash
 pip install pyyaml                                   # once
-python3 .bob/docs/exam/quiz/quiz.py --exam           # full weighted exam, all 77, shuffled
-python3 .bob/docs/exam/quiz/quiz.py --section 4      # one section
-python3 .bob/docs/exam/quiz/quiz.py --count 15       # quick random 15
-python3 .bob/docs/exam/quiz/quiz.py --objective 6.5  # one objective
-python3 .bob/docs/exam/quiz/quiz.py --review         # read every question with answers
+python .bob/docs/exam/quiz/quiz.py --exam           # full weighted exam, all 77, shuffled
+python .bob/docs/exam/quiz/quiz.py --section 4      # one section
+python .bob/docs/exam/quiz/quiz.py --count 15       # quick random 15
+python .bob/docs/exam/quiz/quiz.py --objective 6.5  # one objective
+python .bob/docs/exam/quiz/quiz.py --review         # read every question with answers
 ```
 Answer with letters (`b` or `b,c` for "select two"). You get the explanation and study link
 after each question, and a per-section score at the end.

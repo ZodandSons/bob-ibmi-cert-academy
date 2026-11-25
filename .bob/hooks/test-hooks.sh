@@ -30,22 +30,22 @@ check() {   # check <expected-exit> <hook-command> <json-payload> <label>
 }
 
 echo "== PreToolUse: guard-dangerous-commands.py (matcher ^execute_command\$)"
-G="python3 .bob/hooks/guard-dangerous-commands.py"
+G="python .bob/hooks/guard-dangerous-commands.py"
 check 0 "$G" '{"tool":"execute_command","input":{"command":"makei c -f qrpglesrc/custinq.pgm.rpgle"}}' "compile one program"
 check 2 "$G" '{"tool":"execute_command","input":{"command":"system \"DLTLIB LIB(ORDDEV01)\""}}' "delete a library"
-check 2 "$G" '{"tool":"execute_command","input":{"command":"python3 x.py \"SELECT * FROM ORDPRD.CUSTMAST\""}}' "touch a PROD library"
+check 2 "$G" '{"tool":"execute_command","input":{"command":"python x.py \"SELECT * FROM ORDPRD.CUSTMAST\""}}' "touch a PROD library"
 check 2 "$G" '{"tool":"execute_command","input":{"command":"db2 \"DELETE FROM ORDDEV01.WORK\""}}' "DELETE without WHERE"
 check 0 "$G" '{"tool":"execute_command","input":{"command":"db2 \"DELETE FROM ORDDEV01.WORK WHERE ID = 3\""}}' "DELETE with WHERE"
 
 echo "== PreToolUse: protect-paths.py (matcher write_to_file|apply_diff|...)"
-P="python3 .bob/hooks/protect-paths.py"
+P="python .bob/hooks/protect-paths.py"
 check 0 "$P" '{"tool":"write_to_file","input":{"path":"qrpglesrc/custinq.pgm.rpgle"}}' "write converted source"
 check 2 "$P" '{"tool":"apply_diff","input":{"path":"qrpglesrc/legacy/custinq.pgm.rpgle"}}' "edit legacy original"
 check 2 "$P" '{"tool":"write_to_file","input":{"path":".bob/settings.json"}}' "edit hook config"
 check 2 "$P" '{"tool":"write_to_file","input":{"path":".env"}}' "write credentials file"
 
 echo "== UserPromptSubmit: block-secrets.py"
-S="python3 .bob/hooks/block-secrets.py"
+S="python .bob/hooks/block-secrets.py"
 check 0 "$S" '{"prompt":"Convert CUSTINQ to free format"}' "normal prompt"
 check 2 "$S" '{"prompt":"connect with password=Secret123"}' "prompt containing a password"
 

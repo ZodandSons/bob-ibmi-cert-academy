@@ -16,7 +16,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "python3 .bob/hooks/block-secrets.py",
+            "command": "python .bob/hooks/block-secrets.py",
             "timeout": 5
           }
         ]
@@ -28,7 +28,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "python3 .bob/hooks/guard-dangerous-commands.py",
+            "command": "python .bob/hooks/guard-dangerous-commands.py",
             "timeout": 5
           }
         ]
@@ -38,7 +38,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "python3 .bob/hooks/protect-paths.py",
+            "command": "python .bob/hooks/protect-paths.py",
             "timeout": 5
           }
         ]

@@ -14,4 +14,4 @@ Cover, in this order:
 6. **Risks** — anything fragile: `MOVE` truncation, `GOTO`, unmonitored I/O, locks.
 
 If `$1` is fixed format, end with the inventory from
-`python3 .bob/skills/rpg-fixed-to-free/scripts/inventory_fixed.py $1 --format markdown`.
+`python .bob/skills/rpg-fixed-to-free/scripts/inventory_fixed.py $1 --format markdown`.

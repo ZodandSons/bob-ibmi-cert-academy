@@ -12,11 +12,11 @@ for quick lookups, or copy its patterns into new scripts:
 ```bash
 pip install -r .bob/skills/ibmi-python/scripts/requirements.txt
 set -a; . ./.env; set +a                                 # DB2i_HOST / DB2i_USER / DB2i_PASS
-python3 .bob/skills/ibmi-python/scripts/ibmi_tool.py objects ORDDEV01 --type "*PGM"
-python3 .bob/skills/ibmi-python/scripts/ibmi_tool.py where-used ORDDEV01 CUSTMAST --format json
-python3 .bob/skills/ibmi-python/scripts/ibmi_tool.py source ORDDEV01 QRPGLESRC CUSTINQ \
+python .bob/skills/ibmi-python/scripts/ibmi_tool.py objects ORDDEV01 --type "*PGM"
+python .bob/skills/ibmi-python/scripts/ibmi_tool.py where-used ORDDEV01 CUSTMAST --format json
+python .bob/skills/ibmi-python/scripts/ibmi_tool.py source ORDDEV01 QRPGLESRC CUSTINQ \
         -o qrpglesrc/legacy/custinq.pgm.rpgle
-python3 .bob/skills/ibmi-python/scripts/ibmi_tool.py query "SELECT ..." --dry-run
+python .bob/skills/ibmi-python/scripts/ibmi_tool.py query "SELECT ..." --dry-run
 ```
 
 ## Choosing a connection method

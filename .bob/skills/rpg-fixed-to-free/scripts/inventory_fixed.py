@@ -5,7 +5,7 @@ Reports spec counts, opcodes, numbered indicators, risky constructs and a risk l
 Pure standard library, so it runs on a laptop or in IBM i PASE.
 
 Usage:
-    python3 inventory_fixed.py SOURCE [SOURCE ...] [--format text|markdown|json]
+    python inventory_fixed.py SOURCE [SOURCE ...] [--format text|markdown|json]
 
 Exit code: 0 always (this is a report, not a gate). Use --fail-on-high in CI to exit 1
 when any source is HIGH risk.

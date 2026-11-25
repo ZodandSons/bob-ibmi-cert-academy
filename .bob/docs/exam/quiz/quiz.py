@@ -4,13 +4,13 @@
 Questions live in questions.yaml next to this script (original, weighted like the exam).
 
 Usage:
-  python3 quiz.py --exam                 all questions, shuffled (a full practice exam)
-  python3 quiz.py --section 4            only section 4
-  python3 quiz.py --objective 6.5        only one objective
-  python3 quiz.py --count 15             random 15
-  python3 quiz.py --review               print every question with answer and explanation
-  python3 quiz.py --export-md FILE       write the question bank as Markdown
-  python3 quiz.py --stats                show question counts per section and objective
+  python quiz.py --exam                 all questions, shuffled (a full practice exam)
+  python quiz.py --section 4            only section 4
+  python quiz.py --objective 6.5        only one objective
+  python quiz.py --count 15             random 15
+  python quiz.py --review               print every question with answer and explanation
+  python quiz.py --export-md FILE       write the question bank as Markdown
+  python quiz.py --stats                show question counts per section and objective
 
 Answer with option letters: "b" or, for "select two", "a,c" (any order, spaces allowed).
 Type "q" to stop early and see your score. Needs PyYAML (pip install pyyaml).
@@ -129,11 +129,11 @@ def export_md(questions: list[dict], sections: dict, out: Path) -> None:
     lines = [
         "# Practice questions: C3000-006 IBM Bob v2 Developer – Associate",
         "",
-        "[Exam home](README.md) · Interactive version: `python3 .bob/docs/exam/quiz/quiz.py --exam`",
+        "[Exam home](README.md) · Interactive version: `python .bob/docs/exam/quiz/quiz.py --exam`",
         "",
         f"{len(questions)} original questions, weighted like the exam. Each answer is hidden under",
         "\"Answer\". Try first, then expand. *Generated from `quiz/questions.yaml`; edit that file,",
-        "then run `python3 quiz.py --export-md ../practice-questions.md`.*",
+        "then run `python quiz.py --export-md ../practice-questions.md`.*",
         "",
     ]
     for s in sorted(sections):

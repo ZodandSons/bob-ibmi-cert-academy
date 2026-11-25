@@ -8,7 +8,7 @@
 # .bob/logs/ is listed in .bobignore and should be in .gitignore.
 
 mkdir -p .bob/logs
-python3 -c '
+python -c '
 import json, sys, datetime
 p = json.load(sys.stdin)
 p["output"] = str(p.get("output", ""))[:500]

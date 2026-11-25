@@ -7,7 +7,7 @@
 # them (and so CI or a teammate can see what a Bob session touched).
 
 mkdir -p .bob/logs
-session=$(python3 -c 'import json,sys; print(json.load(sys.stdin).get("session_id","unknown"))' 2>/dev/null)
+session=$(python -c 'import json,sys; print(json.load(sys.stdin).get("session_id","unknown"))' 2>/dev/null)
 {
   echo "=== Bob session ${session} ended $(date -u +%Y-%m-%dT%H:%M:%SZ) ==="
   git status --porcelain 2>/dev/null || echo "(not a git repository)"

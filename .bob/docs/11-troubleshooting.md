@@ -7,7 +7,7 @@
 | Symptom | Likely cause | Fix |
 |---|---|---|
 | Nothing from `.bob` seems to apply | Wrong folder opened as the workspace | Open the folder that **contains** `.bob/` (the repo root), or start `bob` there |
-| Custom modes missing | YAML error, duplicate `slug`, or invalid `fileRegex` stops the file loading | Validate: `python3 -c "import yaml; yaml.safe_load(open('.bob/custom_modes.yaml'))"`. Check every slug is unique and every regex compiles |
+| Custom modes missing | YAML error, duplicate `slug`, or invalid `fileRegex` stops the file loading | Validate: `python -c "import yaml; yaml.safe_load(open('.bob/custom_modes.yaml'))"`. Check every slug is unique and every regex compiles |
 | A mode's rules are ignored | Folder name doesn't match the slug | `slug: rpg-dev` needs `.bob/rules-rpg-dev/` exactly |
 | A rule seems ignored | Too vague, or contradicted by another rule | Make it specific and testable; search `rules/`, `rules-*/` and `AGENTS.md` for conflicts |
 | Skill never activates | Missing or weak `description`, or the mode lacks the `skill` group | Rewrite the description as "what + when", with the words people use. Check **Settings → Skills** |

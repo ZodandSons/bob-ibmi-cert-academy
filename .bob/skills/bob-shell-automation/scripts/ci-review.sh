@@ -36,7 +36,7 @@ bob run --mode ibmi-reviewer \
         --format json --trust --accept-license \
         "$prompt" > "$OUT_DIR/ci-review.json"
 
-python3 - "$OUT_DIR/ci-review.json" "$OUT_DIR/ci-review.md" <<'PY'
+python - "$OUT_DIR/ci-review.json" "$OUT_DIR/ci-review.md" <<'PY'
 import json, re, sys
 result = json.load(open(sys.argv[1]))
 if result.get("status") != "success":

@@ -12,7 +12,7 @@ Compares the ORIGINAL fixed/mixed source with the CONVERTED **free source and re
 This is a static check. It does not replace compiling and testing.
 
 Usage:
-    python3 verify_conversion.py ORIGINAL CONVERTED [--json]
+    python verify_conversion.py ORIGINAL CONVERTED [--json]
 """
 from __future__ import annotations
 

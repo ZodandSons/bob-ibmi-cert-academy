@@ -2,7 +2,7 @@
 """Summarize a folder of `bob run --format json` results (from batch-convert.sh).
 
 Usage:
-    python3 summarize_results.py RESULTS_DIR [--csv]
+    python summarize_results.py RESULTS_DIR [--csv]
 
 Reads <name>.result.json (Bob's final JSON object), <name>.inventory.json and
 <name>.verify.txt when present, and prints a Markdown table (or CSV) with status,

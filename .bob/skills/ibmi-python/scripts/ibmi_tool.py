@@ -18,12 +18,12 @@ Subcommands:
 Every subcommand accepts --dry-run to print the SQL without connecting.
 
 Examples:
-  python3 ibmi_tool.py query "SELECT * FROM ORDDEV01.CUSTMAST FETCH FIRST 5 ROWS ONLY"
-  python3 ibmi_tool.py query "SELECT * FROM CUSTMAST WHERE CMCUST = ?" -p 1001 --format json
-  python3 ibmi_tool.py cl "ADDLIBLE ORDDEV01"
-  python3 ibmi_tool.py source ORDDEV01 QRPGLESRC CUSTINQ -o qrpglesrc/legacy/custinq.pgm.rpgle
-  python3 ibmi_tool.py objects ORDDEV01 --type "*PGM *SRVPGM"
-  python3 ibmi_tool.py where-used ORDDEV01 CUSTMAST
+  python ibmi_tool.py query "SELECT * FROM ORDDEV01.CUSTMAST FETCH FIRST 5 ROWS ONLY"
+  python ibmi_tool.py query "SELECT * FROM CUSTMAST WHERE CMCUST = ?" -p 1001 --format json
+  python ibmi_tool.py cl "ADDLIBLE ORDDEV01"
+  python ibmi_tool.py source ORDDEV01 QRPGLESRC CUSTINQ -o qrpglesrc/legacy/custinq.pgm.rpgle
+  python ibmi_tool.py objects ORDDEV01 --type "*PGM *SRVPGM"
+  python ibmi_tool.py where-used ORDDEV01 CUSTMAST
 """
 from __future__ import annotations
 

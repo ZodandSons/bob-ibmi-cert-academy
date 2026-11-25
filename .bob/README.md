@@ -14,7 +14,7 @@ then [docs/01 Getting started](docs/01-getting-started.md) (30–45 min).
 > run or change. It includes a 10-day plan, a [cheat sheet](docs/exam/cheat-sheet.md),
 > a [walkthrough of IBM's sample test](docs/exam/sample-test-walkthrough.md) and
 > **77 practice questions** with an interactive quiz:
-> `python3 .bob/docs/exam/quiz/quiz.py --exam`
+> `python .bob/docs/exam/quiz/quiz.py --exam`
 
 ---
 
@@ -112,11 +112,11 @@ When the same name exists in both places, **the project version wins**.
 
 ```bash
 # 1. See what Bob's conversion skill sees
-python3 .bob/skills/rpg-fixed-to-free/scripts/inventory_fixed.py \
+python .bob/skills/rpg-fixed-to-free/scripts/inventory_fixed.py \
         .bob/skills/rpg-fixed-to-free/examples/custinq-fixed.pgm.rpgle --format markdown
 
 # 2. Prove the example conversion is sound (exit code 0 = pass)
-python3 .bob/skills/rpg-fixed-to-free/scripts/verify_conversion.py \
+python .bob/skills/rpg-fixed-to-free/scripts/verify_conversion.py \
         .bob/skills/rpg-fixed-to-free/examples/custinq-fixed.pgm.rpgle \
         .bob/skills/rpg-fixed-to-free/examples/custinq-free.pgm.rpgle
 

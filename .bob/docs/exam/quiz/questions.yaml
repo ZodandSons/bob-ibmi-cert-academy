@@ -2,8 +2,8 @@
 # Original questions written for this repository, weighted like the exam:
 #   S1 17% (13) · S2 23% (18) · S3 19% (15) · S4 17% (13) · S5 8% (6) · S6 16% (12) = 77
 # Fields: id, section, objective, question, options{a..e}, answer[list], explain, study
-# Run:     python3 .bob/docs/exam/quiz/quiz.py --help
-# Export:  python3 .bob/docs/exam/quiz/quiz.py --export-md ../practice-questions.md
+# Run:     python .bob/docs/exam/quiz/quiz.py --help
+# Export:  python .bob/docs/exam/quiz/quiz.py --export-md ../practice-questions.md
 
 sections:
   1: Concepts

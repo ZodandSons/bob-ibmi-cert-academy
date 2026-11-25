@@ -1,10 +1,10 @@
 # Practice questions: C3000-006 IBM Bob v2 Developer – Associate
 
-[Exam home](README.md) · Interactive version: `python3 .bob/docs/exam/quiz/quiz.py --exam`
+[Exam home](README.md) · Interactive version: `python .bob/docs/exam/quiz/quiz.py --exam`
 
 77 original questions, weighted like the exam. Each answer is hidden under
 "Answer". Try first, then expand. *Generated from `quiz/questions.yaml`; edit that file,
-then run `python3 quiz.py --export-md ../practice-questions.md`.*
+then run `python quiz.py --export-md ../practice-questions.md`.*
 
 ## Section 1 · Concepts (17%, 13 questions)
 

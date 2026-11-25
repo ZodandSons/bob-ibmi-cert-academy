@@ -40,8 +40,8 @@ for src in "$SRC_DIR"/*.rpgle "$SRC_DIR"/*.sqlrpgle; do
     echo "skip  $file (target exists: $target)"; continue
   fi
 
-  python3 "$SKILL_DIR/scripts/inventory_fixed.py" "$src" --format json > "$OUT_DIR/$name.inventory.json"
-  risk=$(python3 -c 'import json,sys; print(json.load(open(sys.argv[1]))[0]["risk_level"])' "$OUT_DIR/$name.inventory.json")
+  python "$SKILL_DIR/scripts/inventory_fixed.py" "$src" --format json > "$OUT_DIR/$name.inventory.json"
+  risk=$(python -c 'import json,sys; print(json.load(open(sys.argv[1]))[0]["risk_level"])' "$OUT_DIR/$name.inventory.json")
   echo "----  $file  (risk: $risk)"
   [[ -n "${DRY_RUN:-}" ]] && continue
 
@@ -58,7 +58,7 @@ for src in "$SRC_DIR"/*.rpgle "$SRC_DIR"/*.sqlrpgle; do
 
   # Never trust the model's word: verify deterministically.
   if [[ -f "$target" ]]; then
-    if python3 "$SKILL_DIR/scripts/verify_conversion.py" "$src" "$target" > "$OUT_DIR/$name.verify.txt"; then
+    if python "$SKILL_DIR/scripts/verify_conversion.py" "$src" "$target" > "$OUT_DIR/$name.verify.txt"; then
       echo "ok    $target"; converted=$((converted+1))
     else
       echo "FAIL  verification errors in $target (see $OUT_DIR/$name.verify.txt)"; failed=$((failed+1))
@@ -68,7 +68,7 @@ for src in "$SRC_DIR"/*.rpgle "$SRC_DIR"/*.sqlrpgle; do
   fi
 done
 
-python3 .bob/skills/bob-shell-automation/scripts/summarize_results.py "$OUT_DIR" > "$OUT_DIR/summary.md" || true
+python .bob/skills/bob-shell-automation/scripts/summarize_results.py "$OUT_DIR" > "$OUT_DIR/summary.md" || true
 echo
 echo "Converted: $converted  Skipped: $skipped  Failed: $failed"
 echo "Details:   $OUT_DIR/summary.md"

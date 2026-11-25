@@ -16,7 +16,7 @@ That page has the learning path, a map of every file, and links to the 14 guides
 Working through this folder prepares you for **IBM C3000-006, *IBM Bob v2 Developer – Associate***.
 The [certification track](.bob/docs/exam/README.md) maps all 51 exam objectives to study notes and
 hands-on files here, with a 10-day plan, cheat sheet, sample-test walkthrough and a 77-question
-interactive quiz (`python3 .bob/docs/exam/quiz/quiz.py --exam`).
+interactive quiz (`python .bob/docs/exam/quiz/quiz.py --exam`).
 
 ## What's included
 
